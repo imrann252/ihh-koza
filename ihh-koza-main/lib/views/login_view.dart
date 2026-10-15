@@ -94,7 +94,7 @@ class _LoginViewState extends State<LoginView> with SingleTickerProviderStateMix
     }
 
     // Giriş başarılı — Seçilen role göre uygun ekrana yönlendir
- if (mounted) {
+    if (mounted) {
       // Global AppState'e login kaydı
       AppStateProvider.of(context).login(
         identity,
@@ -107,7 +107,6 @@ class _LoginViewState extends State<LoginView> with SingleTickerProviderStateMix
         MaterialPageRoute(builder: (_) => const RoleSelectionView()),
       );
     }
-  }
   }
 
   void _showForgotPasswordDialog() {
