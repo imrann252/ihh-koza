@@ -106,7 +106,7 @@ class KozaAppBar extends StatelessWidget implements PreferredSizeWidget {
                                     child: ListTile(
                                       leading: const CircleAvatar(child: Icon(Icons.mic, color: AppColors.kozaGreen)),
                                       title: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spacebetween,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text('Hedef: ${msg['target']}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                                           Container(
