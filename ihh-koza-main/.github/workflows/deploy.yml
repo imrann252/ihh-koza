@@ -28,26 +28,27 @@ jobs:
         uses: subosito/flutter-action@44ac965b96f18d999802d4b807e3256d5a3f9fa1
         with:
           channel: 'stable'
-          cache: true
 
-      - name: Locate and Build Project
+      - name: Auto Detect and Build
         run: |
-          PUBSPEC=$(find . -name "pubspec.yaml" -not -path "*/.*" | head -n 1)
-          if [ -z "$PUBSPEC" ]; then
-            echo "pubspec.yaml bulunamadı, mevcut dosyalar:"
-            ls -la
+          echo "=== KLASOR YAPISI ==="
+          ls -R
+          
+          TARGET_FILE=$(find . -name "pubspec.yaml" | head -n 1)
+          if [ -z "$TARGET_FILE" ]; then
+            echo "KRITIK HATA: Repoda pubspec.yaml bulunamadi!"
             exit 1
           fi
           
-          DIR=$(dirname "$PUBSPEC")
-          echo "Flutter projesi bulundu: $DIR"
-          cd "$DIR"
-
+          TARGET_DIR=$(dirname "$TARGET_FILE")
+          echo "Proje konumu bulundu: $TARGET_DIR"
+          cd "$TARGET_DIR"
+          
           flutter pub get
           flutter build web --release --base-href="/${{ github.event.repository.name }}/"
-
-          mkdir -p $GITHUB_WORKSPACE/output
-          cp -r build/web/* $GITHUB_WORKSPACE/output/
+          
+          mkdir -p $GITHUB_WORKSPACE/deploy_dist
+          cp -r build/web/* $GITHUB_WORKSPACE/deploy_dist/
 
       - name: Setup Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b
@@ -55,7 +56,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
         with:
-          path: './output'
+          path: './deploy_dist'
 
       - name: Deploy to GitHub Pages
         id: deployment
