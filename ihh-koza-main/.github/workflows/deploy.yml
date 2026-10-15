@@ -30,9 +30,11 @@ jobs:
           channel: 'stable'
 
       - name: Install Dependencies
+        working-directory: ./ihh-koza-main
         run: flutter pub get
 
       - name: Build Web
+        working-directory: ./ihh-koza-main
         run: flutter build web --release --base-href="/${{ github.event.repository.name }}/"
 
       - name: Setup Pages
@@ -41,7 +43,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
         with:
-          path: './build/web'
+          path: './ihh-koza-main/build/web'
 
       - name: Deploy to GitHub Pages
         id: deployment
