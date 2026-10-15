@@ -24,18 +24,27 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
 
+      - name: Inspect Files
+        run: |
+          echo "=== Kök Dizin İçeriği ==="
+          ls -la
+          echo "=== pubspec.yaml Arama Sonucu ==="
+          find . -name "pubspec.yaml"
+
       - name: Setup Flutter
         uses: subosito/flutter-action@44ac965b96f18d999802d4b807e3256d5a3f9fa1
         with:
           channel: 'stable'
 
-      - name: Install Dependencies
-        working-directory: ./ihh-koza-main
-        run: flutter pub get
-
-      - name: Build Web
-        working-directory: ./ihh-koza-main
-        run: flutter build web --release --base-href="/${{ github.event.repository.name }}/"
+      - name: Install & Build
+        run: |
+          TARGET_DIR=$(dirname $(find . -name "pubspec.yaml" | head -n 1))
+          echo "Proje dizini bulundu: $TARGET_DIR"
+          cd "$TARGET_DIR"
+          flutter pub get
+          flutter build web --release --base-href="/${{ github.event.repository.name }}/"
+          mkdir -p $GITHUB_WORKSPACE/deploy_output
+          cp -r build/web/* $GITHUB_WORKSPACE/deploy_output/
 
       - name: Setup Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b
@@ -43,7 +52,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
         with:
-          path: './ihh-koza-main/build/web'
+          path: './deploy_output'
 
       - name: Deploy to GitHub Pages
         id: deployment
